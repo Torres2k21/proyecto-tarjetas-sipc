@@ -1,0 +1,219 @@
+:root {
+  --primary-blue: #00569e;
+  --dark-blue: #003a70;
+  --light-blue-bg: #eef6fc;
+  --card-border-radius: 18px;
+  --text-gray: #4a5568;
+}
+
+* { 
+  box-sizing: border-box; 
+  font-family: 'Segoe UI', Arial, sans-serif; 
+  margin: 0; 
+  padding: 0; 
+}
+
+body {
+  background-color: #f0f4f8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 15px;
+}
+
+.card-container {
+  width: 100%;
+  max-width: 720px;
+  background: #ffffff;
+  border-radius: var(--card-border-radius);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  border: 1px solid #dcdfe6;
+  overflow: hidden;
+  position: relative;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 25px;
+  background: #ffffff;
+}
+
+.brand-group {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.brand-logo-text {
+  font-weight: 800;
+  font-size: 26px;
+  color: var(--primary-blue);
+}
+
+.brand-subtext {
+  border-left: 2px solid #cbd5e1;
+  padding-left: 12px;
+}
+
+.hospital-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--dark-blue);
+}
+
+.red-title {
+  font-size: 13px;
+  color: var(--text-gray);
+}
+
+.code-badge {
+  background: linear-gradient(135deg, #00569e, #003a70);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 12px 0 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.code-badge i { font-size: 24px; }
+.code-badge-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+.code-badge-value { font-size: 22px; font-weight: 800; }
+
+.card-body {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 20px;
+  padding: 10px 25px 20px 25px;
+}
+
+.qr-box {
+  background: var(--light-blue-bg);
+  border-radius: 14px;
+  padding: 15px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.qr-box img {
+  width: 100%;
+  max-width: 170px;
+  background: white;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.qr-action-btn {
+  background: var(--primary-blue);
+  color: white;
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-top: 10px;
+  width: 100%;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.qr-subtext {
+  font-size: 11px;
+  color: var(--text-gray);
+  margin-top: 8px;
+}
+
+.data-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.ambiente-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.ambiente-icon {
+  background: var(--light-blue-bg);
+  color: var(--primary-blue);
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.ambiente-title-label { font-size: 11px; text-transform: uppercase; color: var(--primary-blue); font-weight: 700; }
+.ambiente-title-value { font-size: 22px; font-weight: 800; color: var(--dark-blue); }
+
+.data-row {
+  display: grid;
+  grid-template-columns: 32px 100px 1fr;
+  align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 13px;
+}
+
+.data-row i { color: var(--primary-blue); font-size: 15px; }
+.data-label { color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 11px; }
+.data-value { color: #1e293b; font-weight: 700; }
+
+.status-active {
+  color: #10b981;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  background-color: #10b981;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.footer {
+  background: linear-gradient(90deg, var(--primary-blue), var(--dark-blue));
+  color: white;
+  padding: 10px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+}
+
+.footer-left { display: flex; align-items: center; gap: 6px; font-weight: 600; }
+.footer-right { display: flex; align-items: center; gap: 6px; opacity: 0.9; }
+
+.loading-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  color: var(--primary-blue);
+  z-index: 10;
+}
+
+@media (max-width: 600px) {
+  .card-body { grid-template-columns: 1fr; }
+  .header { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .code-badge { border-radius: 8px; width: 100%; }
+}

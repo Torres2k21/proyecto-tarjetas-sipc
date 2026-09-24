@@ -1,22 +1,12 @@
-proyecto-tarjetas-sipc/
-├── .github/                       # (Opcional) CI/CD o despliegues automáticos
-│   └── workflows/
-├── docs/                          # Documentación del proyecto
-│   ├── arquitectura.md
-│   └── manual_usuario.md
-├── scripts/                       # Scripts auxiliares para automatizaciones
-│   ├── apps_script_backend.js     # Código de Apps Script (Backend)
-│   └── generador_qr_masivo.py    # Script ejecutable en Python para impresión de QRs
-├── public/                        # Archivos estáticos a desplegar en GitHub Pages/Netlify/Vercel
-│   ├── css/                       # Hoja de estilos (si decides separarlo de HTML)
-│   │   └── styles.css
-│   ├── js/                        # Archivos JavaScript cliente
-│   │   ├── app.js
-│   │   └── qrcode.min.js
-│   ├── assets/                    # Recursos gráficos
-│   │   ├── logo-essalud.png
-│   │   └── favicon.ico
-│   └── index.html                 # Aplicación Web Frontend (Interfaz de la Tarjeta)
-├── .gitignore
-├── README.md                      # Descripción del repositorio y configuración básica
-└── package.json                   # Dependencias opcionales (si usas servidores Node.js)
+# Arquitectura del Sistema SIPC - Tarjetas Dinámicas QR
+
+## 1. Módulos
+- **Frontend SPA**: Ubicado en `/public`, HTML5/CSS3/JS vainilla desplegado en GitHub Pages.
+- **Backend API**: Servidor Serverless en Google Apps Script enlazado a la hoja `bd_ambientes_SIPC` de Google Sheets.
+- **Generador Batch**: Script de Python ubicado en `/scripts` para exportar masivamente placas de impresión QR.
+
+## 2. Flujo de Datos
+1. Usuario escanea el QR en la puerta: `https://<usuario>.github.io/<repo>/?id=2301P010072`
+2. `public/js/main.js` captura el parámetro `id`.
+3. Petición GET asíncrona enviada a Google Apps Script.
+4. Respuesta JSON renderizada en la tarjeta física invariable.
