@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIPC - EsSalud | Identificación de Ambientes</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-blue: #00569e;
+      --dark-blue: #003a70;
+      --light-blue-bg: #eef6fc;
+      --card-border-radius: 18px;
+      --text-gray: #4a5568;
+    }
+
+    * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, Arial, sans-serif; margin: 0; padding: 0; }
+
+    body {
+      background-color: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 15px;
+    }
+
+    .card-container {
+      width: 100%;
+      max-width: 720px;
+      background: #ffffff;
+      border-radius: var(--card-border-radius);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      border: 1px solid #dcdfe6;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* HEADER */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 25px;
+      background: #ffffff;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .brand-logo-text {
+      font-weight: 800;
+      font-size: 26px;
+      color: var(--primary-blue);
+    }
+
+    .brand-subtext {
+      border-left: 2px solid #cbd5e1;
+      padding-left: 12px;
+    }
+
+    .hospital-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--dark-blue);
+    }
+
+    .red-title {
+      font-size: 13px;
+      color: var(--text-gray);
+    }
+
+    /* BANNER DE CÓDIGO */
+    .code-badge {
+      background: linear-gradient(135deg, #00569e, #003a70);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 12px 0 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .code-badge i { font-size: 24px; }
+    .code-badge-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .code-badge-value { font-size: 20px; font-weight: 800; }
+
+    /* BODY LAYOUT */
+    .card-body {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 20px;
+      padding: 10px 25px 20px 25px;
+    }
+
+    /* QR BOX */
+    .qr-box {
+      background: var(--light-blue-bg);
+      border-radius: 14px;
+      padding: 15px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .qr-box img {
+      width: 100%;
+      max-width: 170px;
+      background: white;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .qr-action-btn {
+      background: var(--primary-blue);
+      color: white;
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-top: 10px;
+      width: 100%;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .qr-subtext {
+      font-size: 11px;
+      color: var(--text-gray);
+      margin-top: 8px;
+    }
+
+    /* DATA SECTION */
+    .data-section {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .ambiente-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+
+    .ambiente-icon {
+      background: var(--light-blue-bg);
+      color: var(--primary-blue);
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .ambiente-title-label { font-size: 11px; text-transform: uppercase; color: var(--primary-blue); font-weight: 700; }
+    .ambiente-title-value { font-size: 20px; font-weight: 800; color: var(--dark-blue); }
+
+    /* DATA TABLE */
+    .data-row {
+      display: grid;
+      grid-template-columns: 32px 100px 1fr;
+      align-items: center;
+      padding: 7px 0;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 13px;
+    }
+
+    .data-row i { color: var(--primary-blue); font-size: 15px; }
+    .data-label { color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 11px; }
+    .data-value { color: #1e293b; font-weight: 700; }
+
+    .status-active {
+      color: #10b981;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      background-color: #10b981;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    /* FOOTER */
+    .footer {
+      background: linear-gradient(90deg, var(--primary-blue), var(--dark-blue));
+      color: white;
+      padding: 10px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+    }
+
+    .footer-left { display: flex; align-items: center; gap: 6px; font-weight: 600; }
+    .footer-right { display: flex; align-items: center; gap: 6px; opacity: 0.9; }
+
+    /* CARGANDO Y ERROR */
+    .loading-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255, 255, 255, 0.95);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      font-weight: bold;
+      color: var(--primary-blue);
+    }
+
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid var(--primary-blue);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 12px;
+    }
+
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .card-body { grid-template-columns: 1fr; }
+      .header { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .code-badge { border-radius: 8px; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="card-container">
+  <div id="loading" class="loading-overlay">
+    <div class="spinner"></div>
+    <div id="loading-text">Cargando datos del ambiente desde SIPC...</div>
+  </div>
+
+  <!-- CABECERA -->
+  <div class="header">
+    <div class="brand-group">
+      <div class="brand-logo-text">EsSalud</div>
+      <div class="brand-subtext">
+        <div class="hospital-title">Hospital I Félix Torrealva Gutiérrez</div>
+        <div class="red-title">Red Asistencial Ica</div>
+      </div>
+    </div>
+    <div class="code-badge">
+      <i class="fa-solid fa-bed"></i>
+      <div>
+        <div class="code-badge-label">CÓDIGO DE AMBIENTE</div>
+        <div class="code-badge-value" id="val-codigo">-------</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUERPO PRINCIPAL -->
+  <div class="card-body">
+    <!-- QR COLUMNA IZQUIERDA -->
+    <div class="qr-box">
+      <img id="img-qr" src="" alt="Código QR">
+      <div class="qr-action-btn">
+        <i class="fa-solid fa-mobile-screen-button"></i>
+        ESCANEA PARA VER INFORMACIÓN
+      </div>
+      <div class="qr-subtext">Ambiente · Inventario · Ubicación</div>
+    </div>
+
+    <!-- DATOS COLUMNA DERECHA -->
+    <div class="data-section">
+      <div class="ambiente-header">
+        <div class="ambiente-icon"><i class="fa-solid fa-stethoscope"></i></div>
+        <div>
+          <div class="ambiente-title-label">AMBIENTE</div>
+          <div class="ambiente-title-value" id="val-ambiente">Cargando...</div>
+        </div>
+      </div>
+
+      <div class="data-row">
+        <i class="fa-solid fa-hospital"></i>
+        <span class="data-label">LOCAL</span>
+        <span class="data-value" id="val-local">Hospital I Félix Torrealva Gutiérrez</span>
+      </div>
+
+      <div class="data-row">
+        <i class="fa-solid fa-location-dot"></i>
+        <span class="data-label">UBICACIÓN</span>
+        <span class="data-value" id="val-ubicacion">--</span>
+      </div>
+
+      <div class="data-row">
+        <i class="fa-solid fa-user-doctor"></i>
+        <span class="data-label">SERVICIO</span>
+        <span class="data-value" id="val-servicio">--</span>
+      </div>
+
+      <div class="data-row">
+        <i class="fa-solid fa-vector-square"></i>
+        <span class="data-label">ÁREA</span>
+        <span class="data-value" id="val-area">--</span>
+      </div>
+
+      <div class="data-row" style="border-bottom: none;">
+        <i class="fa-solid fa-barcode"></i>
+        <span class="data-label">ESTADO</span>
+        <span class="data-value status-active" id="val-estado">
+          <span class="status-dot"></span> ACTIVO
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PIE DE PÁGINA -->
+  <div class="footer">
+    <div class="footer-left">
+      <i class="fa-regular fa-circle-check"></i> Juntos por un mejor servicio
+    </div>
+    <div class="footer-right">
+      <i class="fa-solid fa-circle-info"></i> En caso de inconsistencias, comunícate con el área de Infraestructura o Administración.
+    </div>
+  </div>
+</div>
+
+<script>
+  // Reemplaza esta URL con la Web App desplegada desde Google Apps Script
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/TU_SCRIPT_ID_AQUI/exec";
+
+  // Obtener el ID del ambiente desde los parámetros URL (ej: ?id=2301P010072) o desde la ruta
+  function getAmbienteId() {
+    const urlParams = new URLSearchParams(window.location.search);
+    let id = urlParams.get('id');
+    if (!id) {
+      // Intenta extraer del pathname o hash si se usa enrutamiento /2301P010072
+      const pathParts = window.location.pathname.split('/').filter(p => p);
+      if (pathParts.length > 0 && pathParts[pathParts.length - 1] !== 'index.html') {
+        id = pathParts[pathParts.length - 1];
+      } else if (window.location.hash) {
+        id = window.location.hash.substring(1);
+      }
+    }
+    return id || "2301P010072"; // ID por defecto para pruebas
+  }
+
+  async function cargarDatosAmbiente() {
+    const codigoAmbiente = getAmbienteId();
+    document.getElementById('val-codigo').textContent = codigoAmbiente;
+    
+    // Actualizar el QR dinámico que apunta a la URL actual
+    const currentUrl = window.location.href;
+    document.getElementById('img-qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=170x170&data=${encodeURIComponent(currentUrl)}`;
+
+    try {
+      // Petición a Google Sheets
+      const response = await fetch(APPS_SCRIPT_URL);
+      const data = await response.json();
+
+      // Buscar el ambiente correspondiente en el listado devuelto
+      const ambiente = data.find(item => item.COD_AMBIENTE == codigoAmbiente || item.CODIGO == codigoAmbiente);
+
+      if (ambiente) {
+        document.getElementById('val-ambiente').textContent = ambiente.NOM_AMBIENTE || ambiente.AMBIENTE || 'No especificado';
+        document.getElementById('val-local').textContent = ambiente.LOCAL || 'Hospital I Félix Torrealva Gutiérrez';
+        document.getElementById('val-ubicacion').textContent = ambiente.UBICACION || `${ambiente.PISO || ''} · ${ambiente.BLOQUE || ''}`;
+        document.getElementById('val-servicio').textContent = ambiente.SERVICIO || 'Consulta Externa';
+        document.getElementById('val-area').textContent = ambiente.AREA || 'Consultorios Médicos';
+        
+        const estado = ambiente.ESTADO || 'ACTIVO';
+        document.getElementById('val-estado').innerHTML = `<span class="status-dot"></span> ${estado}`;
+        
+        // Ocultar cargando
+        document.getElementById('loading').style.display = 'none';
+      } else {
+        document.getElementById('loading-text').textContent = `No se encontró información para el código: ${codigoAmbiente}`;
+      }
+    } catch (error) {
+      console.error("Error al obtener datos:", error);
+      document.getElementById('loading-text').textContent = "Error al conectar con la base de datos SIPC.";
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', cargarDatosAmbiente);
+</script>
+
+</body>
+</html>
