@@ -1,12 +1,26 @@
-# Arquitectura del Sistema SIPC - Tarjetas Dinámicas QR
+# Arquitectura REST API SIPC (Google Workspace Native)
 
-## 1. Módulos
-- **Frontend SPA**: Ubicado en `/public`, HTML5/CSS3/JS vainilla desplegado en GitHub Pages.
-- **Backend API**: Servidor Serverless en Google Apps Script enlazado a la hoja `bd_ambientes_SIPC` de Google Sheets.
-- **Generador Batch**: Script de Python ubicado en `/scripts` para exportar masivamente placas de impresión QR.
+## 1. Visión General
+El proyecto opera bajo una arquitectura **Jamstack / RESTful Serverless** soportada íntegramente por herramientas de Google Workspace:
+- **Base de Datos Relacional**: Google Sheets (`bd_ambientes_SIPC`).
+- **REST Backend Engine**: Google Apps Script (Apps Script Web App execution context).
+- **Frontend SPA**: HTML5/CSS3/JS expuesto públicamente.
 
-## 2. Flujo de Datos
-1. Usuario escanea el QR en la puerta: `https://<usuario>.github.io/<repo>/?id=2301P010072`
-2. `public/js/main.js` captura el parámetro `id`.
-3. Petición GET asíncrona enviada a Google Apps Script.
-4. Respuesta JSON renderizada en la tarjeta física invariable.
+## 2. Contrato de la API REST
+
+### GET /exec?id={CODAMB}
+Obtiene los detalles del ambiente escaneado.
+
+**Respuesta Exitosa (200 OK):**
+```json
+{
+  "status": 200,
+  "data": {
+    "codAmbiente": "2301P010072",
+    "nombreAmbiente": "Consultorio Médico N.° 02",
+    "dependencia": "Consulta Externa",
+    "estado": "ACTIVO",
+    "local": "Hospital I Félix Torrealva Gutiérrez",
+    "red": "Red Asistencial Ica"
+  }
+}

@@ -1,29 +1,43 @@
-const APPS_SCRIPT_URL = 'AQUI_TU_URL_DE_APPS_SCRIPT';
+// URL de la REST API desplegada en Google Apps Script
+const REST_API_URL = 'https://script.google.com/macros/s/AKfycbxgPVoimlgjjTHhaVD-3coKhnOaZv0Ne84Z5wrNAhUWVwYVZL0d3V4TCsuexipqSKGUjg/exec';
 
-async function cargarDatosAmbiente() {
+/**
+ * Cliente HTTP REST para obtener el ambiente mediante GET
+ */
+async function fetchAmbienteREST() {
   const urlParams = new URLSearchParams(window.location.search);
-  const id = urlParams.get('id') || '2301P010072';
+  const codAmbiente = urlParams.get('id') || '2301P010072';
 
-  // Asignar QR y Código en la vista
+  // Renderizar QR apuntando a la URL dinámica de la tarjeta
   document.getElementById('val-qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=170x170&data=${encodeURIComponent(window.location.href)}`;
-  document.getElementById('val-cod-ambiente').innerText = id;
+  document.getElementById('val-cod-ambiente').innerText = codAmbiente;
 
   try {
-    const response = await fetch(`${APPS_SCRIPT_URL}?id=${id}`);
-    const data = await response.json();
+    const response = await fetch(`${REST_API_URL}?id=${codAmbiente}`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
 
-    if (!data.error) {
-      document.getElementById('val-ambiente').innerText = data.nombreAmbiente || '---';
-      document.getElementById('val-local').innerText = data.local || 'Hospital I Félix Torrealva Gutiérrez';
-      document.getElementById('val-servicio').innerText = data.dependencia || '---';
-      document.getElementById('val-estado').innerText = data.estado || 'ACTIVO';
+    const result = await response.json();
+
+    if (result.status === 200) {
+      const item = result.data;
+      document.getElementById('val-ambiente').innerText = item.nombreAmbiente || '---';
+      document.getElementById('val-local').innerText = item.local;
+      document.getElementById('val-servicio').innerText = item.dependencia || '---';
+      document.getElementById('val-estado').innerText = item.estado;
+    } else {
+      console.error("Error REST API:", result.error);
+      document.getElementById('val-ambiente').innerText = "Ambiente No Encontrado";
     }
   } catch (err) {
-    console.warn("Llamada API pendiente de URL válida de Apps Script.");
+    console.error("Falla de conexión REST con Google Apps Script:", err);
   } finally {
     const loadingElem = document.getElementById('loading');
     if (loadingElem) loadingElem.style.display = 'none';
   }
 }
 
-window.addEventListener('DOMContentLoaded', cargarDatosAmbiente);
+window.addEventListener('DOMContentLoaded', fetchAmbienteREST);
