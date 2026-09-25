@@ -12,46 +12,49 @@ function setCorsHeaders(output) {
 // ENDPOINT GET: Recibir consultas por código de ambiente (?id=2301P010072)
 function doGet(e) {
   var idBuscado = e.parameter.id;
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  
+  // Apuntar explícitamente a la hoja con los datos
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName("Exportar Hoja de Trabajo") || ss.getActiveSheet();
+  
   var data = sheet.getDataRange().getValues();
   var headers = data[0];
 
-  // Índices de columnas según la base SIPC
   var idxAmbiente = headers.indexOf("CODAMB");
   var idxNomAmbiente = headers.indexOf("AMBIENTE");
   var idxDependencia = headers.indexOf("DEPENDENCIA");
   var idxEstado = headers.indexOf("ESTADO");
 
   if (!idBuscado) {
-    return setCorsHeaders(ContentService.createTextOutput(JSON.stringify({
+    return ContentService.createTextOutput(JSON.stringify({
       status: 400,
-      error: "Bad Request: Falta el parámetro 'id' (CODAMB)"
-    })));
+      error: "Bad Request: Falta el parámetro 'id'"
+    })).setMimeType(ContentService.MimeType.JSON);
   }
 
-  // Búsqueda en la base de datos
   for (var i = 1; i < data.length; i++) {
     var codAmbiente = String(data[i][idxAmbiente]).trim();
-    if (codAmbiente === String(idBuscado).trim()) {
+    if (codAmbiente.toUpperCase() === String(idBuscado).trim().toUpperCase()) {
       var payload = {
         status: 200,
         data: {
           codAmbiente: data[i][idxAmbiente],
           nombreAmbiente: data[i][idxNomAmbiente],
           dependencia: data[i][idxDependencia],
-          estado: data[i][idxEstado] || "?",
+          estado: data[i][idxEstado] || "ACTIVO",
           local: "Hospital I Félix Torrealva Gutiérrez",
           red: "Red Asistencial Ica"
         }
       };
-      return setCorsHeaders(ContentService.createTextOutput(JSON.stringify(payload)));
+      return ContentService.createTextOutput(JSON.stringify(payload))
+        .setMimeType(ContentService.MimeType.JSON);
     }
   }
 
-  return setCorsHeaders(ContentService.createTextOutput(JSON.stringify({
+  return ContentService.createTextOutput(JSON.stringify({
     status: 404,
-    error: "NotFound: Código de ambiente no registrado en SIPC"
-  })));
+    error: "NotFound: Código de ambiente no encontrado"
+  })).setMimeType(ContentService.MimeType.JSON);
 }
 
 // ENDPOINT POST: Actualización de datos desde el panel web
