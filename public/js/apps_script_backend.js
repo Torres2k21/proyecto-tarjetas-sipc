@@ -12,8 +12,8 @@ function setCorsHeaders(output) {
 // ENDPOINT GET: Recibir consultas por código de ambiente (?id=2301P010072)
 function doGet(e) {
   var idBuscado = e.parameter.id;
+  var callback = e.parameter.callback;
   
-  // Apuntar explícitamente a la hoja con los datos
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName("Exportar Hoja de Trabajo") || ss.getActiveSheet();
   
@@ -25,36 +25,38 @@ function doGet(e) {
   var idxDependencia = headers.indexOf("DEPENDENCIA");
   var idxEstado = headers.indexOf("ESTADO");
 
-  if (!idBuscado) {
-    return ContentService.createTextOutput(JSON.stringify({
-      status: 400,
-      error: "Bad Request: Falta el parámetro 'id'"
-    })).setMimeType(ContentService.MimeType.JSON);
-  }
+  var responseObj = { status: 404, error: "Ambiente no encontrado" };
 
-  for (var i = 1; i < data.length; i++) {
-    var codAmbiente = String(data[i][idxAmbiente]).trim();
-    if (codAmbiente.toUpperCase() === String(idBuscado).trim().toUpperCase()) {
-      var payload = {
-        status: 200,
-        data: {
-          codAmbiente: data[i][idxAmbiente],
-          nombreAmbiente: data[i][idxNomAmbiente],
-          dependencia: data[i][idxDependencia],
-          estado: data[i][idxEstado] || "ACTIVO",
-          local: "Hospital I Félix Torrealva Gutiérrez",
-          red: "Red Asistencial Ica"
-        }
-      };
-      return ContentService.createTextOutput(JSON.stringify(payload))
-        .setMimeType(ContentService.MimeType.JSON);
+  if (idBuscado) {
+    for (var i = 1; i < data.length; i++) {
+      var codAmbiente = String(data[i][idxAmbiente]).trim();
+      if (codAmbiente.toUpperCase() === String(idBuscado).trim().toUpperCase()) {
+        responseObj = {
+          status: 200,
+          data: {
+            codAmbiente: data[i][idxAmbiente],
+            nombreAmbiente: data[i][idxNomAmbiente],
+            dependencia: data[i][idxDependencia],
+            estado: data[i][idxEstado] || "ACTIVO",
+            local: "Hospital I Félix Torrealva Gutiérrez",
+            red: "Red Asistencial Ica"
+          }
+        };
+        break;
+      }
     }
   }
 
-  return ContentService.createTextOutput(JSON.stringify({
-    status: 404,
-    error: "NotFound: Código de ambiente no encontrado"
-  })).setMimeType(ContentService.MimeType.JSON);
+  var jsonOutput = JSON.stringify(responseObj);
+  
+  // Si la petición viene con callback (JSONP)
+  if (callback) {
+    return ContentService.createTextOutput(callback + "(" + jsonOutput + ")")
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+
+  return ContentService.createTextOutput(jsonOutput)
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
 // ENDPOINT POST: Actualización de datos desde el panel web

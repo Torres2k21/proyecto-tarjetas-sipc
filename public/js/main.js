@@ -1,40 +1,47 @@
-// URL de la REST API desplegada en Google Apps Script
-const REST_API_URL = 'https://script.google.com/macros/s/AKfycbxgPVoimlgjjTHhaVD-3coKhnOaZv0Ne84Z5wrNAhUWVwYVZL0d3V4TCsuexipqSKGUjg/exec';
+const REST_API_URL = 'https://script.google.com/macros/s/AKfycbyWflPorIwx46Q65c4VsL9CweA9aPx8UtmlYCSyQvVfkGn87uQL9y-aRMrWGfkG3bVhYw/exec';
 
-async function fetchAmbienteREST() {
+function fetchAmbienteJSONP() {
   const urlParams = new URLSearchParams(window.location.search);
   const codAmbiente = urlParams.get('id') || '2301P010072';
 
-  // Mostrar QR dinámico
-  document.getElementById('val-qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=170x170&data=${encodeURIComponent(window.location.href)}`;
-  document.getElementById('val-cod-ambiente').innerText = codAmbiente;
+  // Renderizar QR dinámico
+  const qrImg = document.getElementById('val-qr-img');
+  if (qrImg) {
+    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=170x170&data=${encodeURIComponent(window.location.href)}`;
+  }
+  
+  const codElem = document.getElementById('val-cod-ambiente');
+  if (codElem) {
+    codElem.innerText = codAmbiente;
+  }
 
-  try {
-    // Solicitud HTTP compatible con la redirección de Google Apps Script
-    const response = await fetch(`${REST_API_URL}?id=${encodeURIComponent(codAmbiente)}`, {
-      method: 'GET',
-      redirect: 'follow'
-    });
+  // Nombre de función callback global para JSONP
+  window.sipcCallback = function(result) {
+    const loadingElem = document.getElementById('loading');
+    if (loadingElem) loadingElem.style.display = 'none';
 
-    const result = await response.json();
-
-    if (result.status === 200) {
+    if (result && result.status === 200) {
       const item = result.data;
       document.getElementById('val-ambiente').innerText = item.nombreAmbiente || '---';
       document.getElementById('val-local').innerText = item.local;
       document.getElementById('val-servicio').innerText = item.dependencia || '---';
       document.getElementById('val-estado').innerText = item.estado;
     } else {
-      console.error("Error REST API:", result.error);
+      console.error("Error en datos recibidos:", result);
       document.getElementById('val-ambiente').innerText = "Ambiente No Encontrado";
     }
-  } catch (err) {
-    console.error("Error de conexión con Apps Script:", err);
-    document.getElementById('val-ambiente').innerText = "Error de Conexión";
-  } finally {
+  };
+
+  // Inyección del script dinámico
+  const script = document.createElement('script');
+  script.src = `${REST_API_URL}?id=${encodeURIComponent(codAmbiente)}&callback=sipcCallback`;
+  script.onerror = function() {
     const loadingElem = document.getElementById('loading');
     if (loadingElem) loadingElem.style.display = 'none';
-  }
+    document.getElementById('val-ambiente').innerText = "Error de Conexión";
+  };
+  
+  document.body.appendChild(script);
 }
 
-window.addEventListener('DOMContentLoaded', fetchAmbienteREST);
+window.addEventListener('DOMContentLoaded', fetchAmbienteJSONP);
